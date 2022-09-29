@@ -1,5 +1,6 @@
 # Importando as bibliotecas que serão utilizadas no decorrer do código
 import lyricsgenius as lg
+import pandas as pd
 
 
 # Função que importa os álbums de determinado artista
@@ -59,10 +60,30 @@ def importar_letras(nome_artista):
     return musicas_dados # Retorna a lista com os dados das músicas
 
 
+# Função que cria um DataFrame com as letras das músicas
+def criar_df_letras(nome_artista):
+
+    # Chama a função que obtém as letras das músicas
+    letras_dict = importar_letras(nome_artista)
+
+    # Obtém as chaves do dicionário que serão as colunas do DataFrame
+    colunas = list(letras_dict[0].keys()) 
+
+    # Cria uma lista com apenas os valores do dicionário com as letras
+    lista_letras = []
+    for musica in letras_dict:
+        lista_letras.append(list(musica.values()))
+
+    # Cria o DataFrame propriamente dito
+    df_musicas = pd.DataFrame(data=lista_letras, columns=colunas) 
+
+    return df_musicas # Retorna o DataFrame obtido
+
+
 # Cria um objeto da classe 'Genius' que será utilizado para realizar os comandos da api, utilizando um token de autenticação
 token = "u2SqMOrCtzWwY9xGxI6PiLn5aVqnhzWMiaMWB2BmrfuvJQL-Z_nQ4pv8gJej4isU" 
 genius = lg.Genius(token, timeout=60, retries=10)
 
 ARTISTA = "Adele" # Nome do artista cujas letras serão obtidas
-letras_musicas = importar_letras(ARTISTA) # Chama a função que obtém as letras das músicas
-print(letras_musicas) # Imprime o que foi obtido
+df_letras = criar_df_letras(ARTISTA) # Cria um DataFrame com as letras do artista escolhido
+df_letras.to_csv(f"./Letras/{ARTISTA}.csv", sep=";", encoding="utf-8-sig") # Exporta o df em um csv
