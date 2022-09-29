@@ -23,10 +23,46 @@ def importar_albums(nome_artista):
     return albums_lista # Retorna a lista encontrada
 
 
+# Função que importa as letras das músicas de uma lista de álbums
+def importar_letras(nome_artista):
+
+    # Chama a função que importa os álbums
+    albums = importar_albums(nome_artista) 
+    
+    # Loop que percorre por todos os álbums 
+    musicas_dados = []
+    for album in albums:
+
+        # Obtém as músicas de cada álbum
+        musicas_album = genius.album_tracks(album.get("id")) 
+
+        # Loop que percorre por todas as músicas de um álbum
+        for nome_musica in musicas_album.get("tracks"):
+            num_track = nome_musica.get("number") # Obtém o número da música no álbum
+            musica = nome_musica.get("song") # Utiliza o nome da música para obter dados sobre ela
+            nome = musica.get("title") # Obtém o nome da música
+            musica_id = musica.get("id") # Otém o ID da música
+            data = musica.get("release_date_components") # Obtém a data de lançamento da música
+            data = lg.utils.convert_to_datetime(data) # Converte a data para o tipo 'datetime'
+
+            # Utiliza o id da música para obter mais informações sobre ela
+            musica_dict = genius.search_song(song_id = musica_id, get_full_info=False)
+            
+            try:
+                letra = musica_dict.lyrics # Tenta obter a letra da música
+            except AttributeError: 
+                letra = "" #  Caso a música não possua letra(instrumental) não interrompe o código
+
+            # Insere os dados encontrados em uma lista
+            musicas_dados.append({"album": album["nome"], "num_album": num_track, "nome": nome, "letra": letra, "data": data}) 
+
+    return musicas_dados # Retorna a lista com os dados das músicas
+
+
 # Cria um objeto da classe 'Genius' que será utilizado para realizar os comandos da api, utilizando um token de autenticação
 token = "u2SqMOrCtzWwY9xGxI6PiLn5aVqnhzWMiaMWB2BmrfuvJQL-Z_nQ4pv8gJej4isU" 
 genius = lg.Genius(token, timeout=60, retries=10)
 
-ARTISTA = "Adele" # Nome do artista cujos albúms serão obtidos
-albums = importar_albums(ARTISTA) # Chama a função que importa os álbums
-print(albums) # Imprime o que foi obtido
+ARTISTA = "Adele" # Nome do artista cujas letras serão obtidas
+letras_musicas = importar_letras(ARTISTA) # Chama a função que obtém as letras das músicas
+print(letras_musicas) # Imprime o que foi obtido
