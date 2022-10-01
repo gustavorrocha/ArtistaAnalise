@@ -91,10 +91,10 @@ def obter_dados(nome_artista, tipos_album):
             musica_assinatura_tempo = musica_features.get("time_signature") # Armazena a assinatura do tempo da música
 
             # Insere os dados encontrados em uma lista de dicionarios
-            musicas_dados.append({"album": album["nome"], "num_album": num_track, "nome": musica_nome, "data": album["data"], 
-            "artistas": musica_nomes_artistas, "popularidade": musica_popularidade, "letra_explicita": musica_explicita, 
-            "duracao_ms": musica_duracao_ms, "volume": musica_volume, "bpm": musica_bpm, "energia": musica_energia, 
-            "dancabilidade": musica_dancabilidade, "vivacidade": musica_vivacidade, "fala": musica_fala, 
+            musicas_dados.append({"album_id": album.get("id"), "album": album["nome"], "musicas_album": len(musicas_album_ids), "num_album": num_track, 
+            "nome": musica_nome, "data": album["data"], "artistas": musica_nomes_artistas, "popularidade": musica_popularidade, 
+            "letra_explicita": musica_explicita, "duracao_ms": musica_duracao_ms, "volume": musica_volume, "bpm": musica_bpm, 
+            "energia": musica_energia, "dancabilidade": musica_dancabilidade, "vivacidade": musica_vivacidade, "fala": musica_fala, 
             "acustica": musica_acustica, "instrumentalidade": musica_instrumentalidade, "valencia": musica_valencia, 
             "chave": musica_chave, "modo": musica_modo, "assinatura_tempo": musica_assinatura_tempo}) 
 

@@ -55,7 +55,8 @@ def importar_letras(nome_artista):
                 letra = "" #  Caso a música não possua letra(instrumental) não interrompe o código
 
             # Insere os dados encontrados em uma lista
-            musicas_dados.append({"album": album["nome"], "num_album": num_track, "nome": nome, "letra": letra, "data": data}) 
+            musicas_dados.append({"album": album["nome"], "album_id": album.get("id"), "num_album": num_track, "nome": nome, "letra": letra, "musicas_album": len(musicas_album.get("tracks")),
+                                  "musicas_album": len(musicas_album.get("tracks")), "data": data}) 
 
     return musicas_dados # Retorna a lista com os dados das músicas
 
