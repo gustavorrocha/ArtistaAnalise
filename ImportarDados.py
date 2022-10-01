@@ -33,10 +33,71 @@ def encontrar_albums(nome_artista, tipos_album):
                 album_num_tracks = album.get("total_tracks") # Obtém o número de músicas do álbum
                 
                 # Insere os dados encontrados em um dicionário
-                albums_lista.append({"id" : album_id, "name" : album_name, 
-                "release_date" : album_release_date, "num_tracks" : album_num_tracks})
+                albums_lista.append({"id" : album_id, "nome" : album_name, 
+                "data" : album_release_date, "num_musicas" : album_num_tracks})
 
-    return albums_lista
+    return albums_lista # Retorna a lista de álbums obtida
+
+
+# Função que ira obter os dados de cada música
+def obter_dados(nome_artista, tipos_album):
+
+    # Utiliza a função criada para obter os álbums do artista
+    albums = encontrar_albums(nome_artista, tipos_album) 
+
+    # Loop que percorre por todos os álbums 
+    musicas_dados = []
+    for album in albums:
+
+        # Obtém as músicas de cada álbum
+        musicas_album = sp.album_tracks(album.get("id")).get("items")
+
+        # Cria uma lista com os IDs das músicas do álbum (uma vez que alguns dados só são obtidos dessa forma)
+        musicas_album_ids = list(map(lambda msc: msc.get("id"), musicas_album))
+
+        # Função que recebe uma lista de IDs e retorna dados sobre as músicas
+        musicas = sp.tracks(musicas_album_ids)
+
+        # Loop que percorre por todas as músicas de um álbum
+        for musica in musicas.get("tracks"):
+            num_track = musica.get("track_number") # Obtém o número da música no álbum
+            musica_id = musica.get("id") # Otém o ID da música
+            musica_nome = musica.get("name") # Obtém o nome da música
+            musica_popularidade = musica.get("popularity") # Obtém a popularidade da música
+            musica_explicita = musica.get("explicit") # "Decobre" se a música possui letra explícita
+            musica_duracao_ms = musica.get("duration_ms") # Obtém a duração da música (em ms)
+
+            # Obtém uma string com todos os artistas da música separados por '/'
+            musica_artistas_lista = list(map(lambda art: art.get("name"), musica.get("artists")))
+            musica_nomes_artistas = "/".join(musica_artistas_lista)
+
+            # Obtém algumas 'features' de cada música
+            musica_features = sp.audio_features(musica_id)[0]
+            
+            musica_volume = musica_features.get("loudness") # Armazena o volume da música
+            musica_bpm = musica_features.get("tempo") # Armazena o bpm da música
+            musica_dancabilidade = musica_features.get("danceability") # Armazena a dançabilidade da música
+            musica_energia = musica_features.get("energy") # Armazena a energia da música
+            musica_fala = musica_features.get("speechiness") # Armazena o nível de fala da música
+            musica_acustica = musica_features.get("acousticness") # Armazena o nível de acústica da música
+            musica_instrumentalidade = musica_features.get("instrumentalness") # Armazena o nível de instumentalidade da música
+            musica_vivacidade = musica_features.get("liveness") # Armazena a vivacidade da música
+            musica_valencia = musica_features.get("valence") # Armazena a valência da música
+
+            # Informações musicais que podem não ser utilizadas
+            musica_chave = musica_features.get("key") # Armazena a chave da música
+            musica_modo = musica_features.get("mode") # Armazena o modo da música
+            musica_assinatura_tempo = musica_features.get("time_signature") # Armazena a assinatura do tempo da música
+
+            # Insere os dados encontrados em uma lista de dicionarios
+            musicas_dados.append({"album": album["nome"], "num_album": num_track, "nome": musica_nome, "data": album["data"], 
+            "artistas": musica_nomes_artistas, "popularidade": musica_popularidade, "letra_explicita": musica_explicita, 
+            "duracao_ms": musica_duracao_ms, "volume": musica_volume, "bpm": musica_bpm, "energia": musica_energia, 
+            "dancabilidade": musica_dancabilidade, "vivacidade": musica_vivacidade, "fala": musica_fala, 
+            "acustica": musica_acustica, "instrumentalidade": musica_instrumentalidade, "valencia": musica_valencia, 
+            "chave": musica_chave, "modo": musica_modo, "assinatura_tempo": musica_assinatura_tempo}) 
+
+    return musicas_dados # Retorna a lista com os dados das músicas
 
 
 # Dados para autenticação
@@ -48,5 +109,6 @@ credenciais = spotipy.oauth2.SpotifyClientCredentials(client_id=id, client_secre
 sp = spotipy.Spotify(client_credentials_manager=credenciais)
     
 ARTISTA = "Adele" # Nome do artista cujas letras serão obtidas
-albums = encontrar_albums(ARTISTA, ["single", "album"]) # Utiliza a função criada para obter os álbums do artista
-print(albums) # Imprime o que foi obtido
+
+dados_musicas = obter_dados(ARTISTA, ["album", "single"])
+print(dados_musicas) # Imprime o que foi obtido
