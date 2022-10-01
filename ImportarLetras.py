@@ -87,4 +87,4 @@ genius = lg.Genius(token, timeout=60, retries=10)
 
 ARTISTA = "Adele" # Nome do artista cujas letras serão obtidas
 df_letras = criar_df_letras(ARTISTA) # Cria um DataFrame com as letras do artista escolhido
-df_letras.to_csv(f"./Letras/{ARTISTA}.csv", sep=";", encoding="utf-8-sig") # Exporta o df em um csv
+df_letras.to_csv(f"./Infos/Letras - {ARTISTA}.csv", sep=";", encoding="utf-8-sig") # Exporta o df em um csv

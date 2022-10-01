@@ -131,4 +131,4 @@ sp = spotipy.Spotify(client_credentials_manager=credenciais)
     
 ARTISTA = "Adele" # Nome do artista cujos dados musicais serão obtidas
 df_dados = criar_df_dados(ARTISTA, ["album", "single"]) # Cria um DataFrame com os dados das músicas do artista escolhido
-df_dados.to_csv(f"./Dados/{ARTISTA}.csv", sep=";", encoding="utf-8-sig") # Exporta o df em um csv
+df_dados.to_csv(f"./Infos/Dados - {ARTISTA}.csv", sep=";", encoding="utf-8-sig") # Exporta o df em um csv
