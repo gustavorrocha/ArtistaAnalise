@@ -1,4 +1,6 @@
+# Importando as bibliotecas que serão utilizadas no decorrer do código
 import spotipy
+import pandas as pd
 
 
 # Funçao que encontra determinados tipos de álbum de um artista
@@ -73,7 +75,6 @@ def obter_dados(nome_artista, tipos_album):
 
             # Obtém algumas 'features' de cada música
             musica_features = sp.audio_features(musica_id)[0]
-            
             musica_volume = musica_features.get("loudness") # Armazena o volume da música
             musica_bpm = musica_features.get("tempo") # Armazena o bpm da música
             musica_dancabilidade = musica_features.get("danceability") # Armazena a dançabilidade da música
@@ -100,7 +101,27 @@ def obter_dados(nome_artista, tipos_album):
     return musicas_dados # Retorna a lista com os dados das músicas
 
 
-# Dados para autenticação
+# Função que cria um DataFrame com os dados das músicas
+def criar_df_dados(nome_artista, tipos_album):
+
+    # Chama a função que obtém os dados das músicas
+    dados_dict = obter_dados(nome_artista, tipos_album)
+
+    # Obtém as chaves do dicionário que serão as colunas do DataFrame
+    colunas = list(dados_dict[0].keys()) 
+
+    # Cria uma lista com apenas os valores do dicionário com os dados
+    lista_dados = []
+    for musica in dados_dict:
+        lista_dados.append(list(musica.values()))
+
+    # Cria o DataFrame propriamente dito
+    df_musicas = pd.DataFrame(data=lista_dados, columns=colunas) 
+
+    return df_musicas # Retorna o DataFrame obtido
+
+
+# Dados que serão utilizados para autenticação
 id = "aec45161707e49dea708fb56dfa88983"
 secret = "688ff38871c343b99b08c034787aea7c"
 
@@ -108,7 +129,6 @@ secret = "688ff38871c343b99b08c034787aea7c"
 credenciais = spotipy.oauth2.SpotifyClientCredentials(client_id=id, client_secret=secret)
 sp = spotipy.Spotify(client_credentials_manager=credenciais)
     
-ARTISTA = "Adele" # Nome do artista cujas letras serão obtidas
-
-dados_musicas = obter_dados(ARTISTA, ["album", "single"])
-print(dados_musicas) # Imprime o que foi obtido
+ARTISTA = "Adele" # Nome do artista cujos dados musicais serão obtidas
+df_dados = criar_df_dados(ARTISTA, ["album", "single"]) # Cria um DataFrame com os dados das músicas do artista escolhido
+df_dados.to_csv(f"./Dados/{ARTISTA}.csv", sep=";", encoding="utf-8-sig") # Exporta o df em um csv
