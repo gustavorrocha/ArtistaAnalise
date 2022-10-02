@@ -83,7 +83,7 @@ def criar_df_letras(nome_artista):
 
 # Cria um objeto da classe 'Genius' que será utilizado para realizar os comandos da api, utilizando um token de autenticação
 token = "u2SqMOrCtzWwY9xGxI6PiLn5aVqnhzWMiaMWB2BmrfuvJQL-Z_nQ4pv8gJej4isU" 
-genius = lg.Genius(token, timeout=60, retries=10)
+genius = lg.Genius(token, timeout=60, retries=10, remove_section_headers=True)
 
 ARTISTA = "Adele" # Nome do artista cujas letras serão obtidas
 df_letras = criar_df_letras(ARTISTA) # Cria um DataFrame com as letras do artista escolhido

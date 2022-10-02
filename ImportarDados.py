@@ -1,5 +1,6 @@
 # Importando as bibliotecas que serão utilizadas no decorrer do código
 import spotipy
+import time
 import pandas as pd
 
 
@@ -68,6 +69,7 @@ def obter_dados(nome_artista, tipos_album):
             musica_popularidade = musica.get("popularity") # Obtém a popularidade da música
             musica_explicita = musica.get("explicit") # "Decobre" se a música possui letra explícita
             musica_duracao_ms = musica.get("duration_ms") # Obtém a duração da música (em ms)
+            musica_duracao = time.strftime('%M:%S', time.gmtime(musica_duracao_ms/1000)) # Obtém a duração formatada da música
 
             # Obtém uma string com todos os artistas da música separados por '/'
             musica_artistas_lista = list(map(lambda art: art.get("name"), musica.get("artists")))
@@ -93,7 +95,7 @@ def obter_dados(nome_artista, tipos_album):
             # Insere os dados encontrados em uma lista de dicionarios
             musicas_dados.append({"album_id": album.get("id"), "album": album["nome"], "musicas_album": len(musicas_album_ids), "num_album": num_track, 
             "nome": musica_nome, "data": album["data"], "artistas": musica_nomes_artistas, "popularidade": musica_popularidade, 
-            "letra_explicita": musica_explicita, "duracao_ms": musica_duracao_ms, "volume": musica_volume, "bpm": musica_bpm, 
+            "letra_explicita": musica_explicita, "duracao": musica_duracao, "volume": musica_volume, "bpm": musica_bpm, 
             "energia": musica_energia, "dancabilidade": musica_dancabilidade, "vivacidade": musica_vivacidade, "fala": musica_fala, 
             "acustica": musica_acustica, "instrumentalidade": musica_instrumentalidade, "valencia": musica_valencia, 
             "chave": musica_chave, "modo": musica_modo, "assinatura_tempo": musica_assinatura_tempo}) 
