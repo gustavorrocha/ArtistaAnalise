@@ -6,6 +6,16 @@ import pandas as pd
 
 # Funçao que encontra determinados tipos de álbum de um artista
 def encontrar_albums(nome_artista, tipos_album):
+    """Funçao que encontra determinados tipos de álbum de um artista
+
+    :param nome_artista: Nome do artista
+    :type nome_artista: str
+    :param tipos_album: 'Tipos' de álbum desejados podendo ser "album", "single", "appears_on" e\ou "compilation"
+    :type tipos_album: list[str]
+    :raises ValueError: Caso algum tipo de álbum seja inválido
+    :return: Todos os álbums do artista
+    :rtype: list[str]
+    """
 
     # Obtém dados sobre o artista através de uma pesquisa
     artista = sp.search(nome_artista, type="artist", limit=1) 
@@ -44,6 +54,15 @@ def encontrar_albums(nome_artista, tipos_album):
 
 # Função que ira obter os dados de cada música
 def obter_dados(nome_artista, tipos_album):
+    """Função que obtém os dados de cada música
+
+    :param nome_artista: Nome do artista
+    :type nome_artista: str
+    :param tipos_album: 'Tipos' de álbum desejados podendo ser "album", "single", "appears_on" e\ou "compilation"
+    :type tipos_album: list[str]
+    :return: Dados de todas as músicas do artista
+    :rtype: list[dict]
+    """
 
     # Utiliza a função criada para obter os álbums do artista
     albums = encontrar_albums(nome_artista, tipos_album) 
@@ -105,6 +124,15 @@ def obter_dados(nome_artista, tipos_album):
 
 # Função que cria um DataFrame com os dados das músicas
 def criar_df_dados(nome_artista, tipos_album):
+    """Função que cria um DataFrame com os dados das músicas
+
+    :param nome_artista: Nome do artista
+    :type nome_artista: str
+    :param tipos_album: 'Tipos' de álbum desejados podendo ser "album", "single", "appears_on" e\ou "compilation"
+    :type tipos_album: list[str]
+    :return: Dataframe com todos os dados das músicas de um artista
+    :rtype: pandas.DataFrame
+    """
 
     # Chama a função que obtém os dados das músicas
     dados_dict = obter_dados(nome_artista, tipos_album)
@@ -130,7 +158,7 @@ secret = "688ff38871c343b99b08c034787aea7c"
 # Cria um objeto da classe 'Spotify' que será utilizado para realizar os comandos da api, utilizando dois dados de autenticação
 credenciais = spotipy.oauth2.SpotifyClientCredentials(client_id=id, client_secret=secret)
 sp = spotipy.Spotify(client_credentials_manager=credenciais)
-    
+
 ARTISTA = "Adele" # Nome do artista cujos dados musicais serão obtidas
 df_dados = criar_df_dados(ARTISTA, ["album", "single"]) # Cria um DataFrame com os dados das músicas do artista escolhido
 df_dados.to_csv(f"./Infos/Dados - {ARTISTA}.csv", sep=";", encoding="utf-8-sig") # Exporta o df em um csv

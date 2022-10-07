@@ -5,6 +5,13 @@ import pandas as pd
 
 # Função que importa os álbums de determinado artista
 def importar_albums(nome_artista):
+    """Função que importa os álbums de determinado artista
+
+    :param nome_artista: Nome do artista desejado
+    :type nome_artista: str
+    :return: Todos os álbums desse artista
+    :rtype: list[str]
+    """
 
     # Obtém o objeto da classe "Artist" do artista desejado
     artist = genius.search_artist(nome_artista, max_songs=0, get_full_info=False) 
@@ -26,7 +33,13 @@ def importar_albums(nome_artista):
 
 # Função que importa as letras das músicas de uma lista de álbums
 def importar_letras(nome_artista):
+    """Função que importa as letras das músicas de uma lista de álbums
 
+    :param nome_artista: Nome do artista desejado
+    :type nome_artista: str
+    :return: Músicas do artista e suas respectivas letras
+    :rtype: list[dict]
+    """
     # Chama a função que importa os álbums
     albums = importar_albums(nome_artista) 
     
@@ -63,6 +76,13 @@ def importar_letras(nome_artista):
 
 # Função que cria um DataFrame com as letras das músicas
 def criar_df_letras(nome_artista):
+    """Função que cria um DataFrame com as letras das músicas
+
+    :param nome_artista: Nome do artista desejado
+    :type nome_artista: str
+    :return: Dataframe com as letras de todas as músicas de um artista
+    :rtype: pandas.DataFrame
+    """
 
     # Chama a função que obtém as letras das músicas
     letras_dict = importar_letras(nome_artista)
