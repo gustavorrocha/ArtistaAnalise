@@ -56,8 +56,8 @@ visualizacao_maxmin_musicas(dados_df, "popularidade")
 visualizacao_maxmin_musicas(dados_df, "duracao")
 
 # Chama a função com os albuns mais premiados 
-albuns_mais_premiados(df, 3)  
+albuns_mais_premiados(dados_df, 3)  
 
 # Chama a função com a correlação entre duração da música e alguma variável
-corr_com_tempo(df,"popularidade")
+corr_com_tempo(dados_df,"popularidade")
 
