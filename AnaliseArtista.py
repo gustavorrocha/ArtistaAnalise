@@ -1,4 +1,6 @@
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Cálculo do máximo e mínimo de aspectos por álbum
 def max_e_min_album(df, coluna): 
@@ -13,6 +15,12 @@ def max_e_min_musicas(df, coluna):
     max_musicas = (df[["nome", coluna]].sort_values(by=[coluna], ascending=False)[:3])
     min_musicas = (df[["nome", coluna]].sort_values(by=[coluna])[:3])
     return pd.concat([max_musicas, min_musicas], ignore_index=True, axis=0)
+
+# Visualização do máximo e mínimo de aspectos em toda a discografia do artista
+def visualizacao_maxmin_musicas(df, coluna):
+    principal = max_e_min_musicas(df, coluna)
+    fig = sns.barplot(data = principal, x = "nome", y = coluna)
+    return plt.show ()
     
 # Importa os dados do csv
 ARTISTA = "Adele"
@@ -25,3 +33,7 @@ max_e_min_album(dados_df, "duracao")
 # Chama a função com os apectos de popularidade e duração em toda a discografia do artista
 max_e_min_musicas(dados_df, "popularidade")
 max_e_min_musicas(dados_df, "duracao")
+
+# Chama a visualização com os apectos de popularidade e duração em toda a discografia do artista
+visualizacao_maxmin_musicas(dados_df, "popularidade")
+visualizacao_maxmin_musicas(dados_df, "duracao")
