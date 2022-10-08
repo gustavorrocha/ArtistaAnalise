@@ -1,67 +1,30 @@
-<<<<<<< HEAD
 import pandas as pd
 
 ARTISTA = "Adele"
 
 #df com os dados das musicas e respectivas letras 
-dados = pd.read_csv(f"C:/Users/Pc/Downloads/{ARTISTA}.csv", sep=";", encoding="utf-8-sig", index_col = 0)
-
-#Incluindo o album ocmo uma coluna do DF
-dados["album"] = dados.index
-dados.reset_index(drop=True, inplace = True)
-
-#albuns de interesse
-albuns = ["19", "21", "25", "30"]
-dados = dados[dados['album'].isin(albuns)]
-dados['nome'] = dados['nome'].str.lower() #formatando no mesmo layout dos dados das tabelas de premios
-
-
+df = pd.read_csv(f"{ARTISTA}.csv", sep=";", encoding="utf-8-sig", index_col = 0)
 #tabelas de premios das musicas e dos albuns 
-premios_musicas = pd.read_csv("MusiscaEPremios.csv", sep=",", encoding="utf-8-sig", index_col = 0)
+premios_musicas = pd.read_csv("MusicaEPremios.csv", sep=",", encoding="utf-8-sig", index_col = 0)
 premios_albuns = pd.read_csv("AlbunsEPremios.csv", sep=",", encoding="utf-8-sig", index_col = 0)
 
-#mudança do tipo de dado da coluna album para string
-premios_albuns.rename(columns = {'nome': 'album'}, inplace = True)
-premios_albuns['album'] = premios_albuns['album'].apply(str)
 
-#juntando os 3 dfs 
-dados = pd.merge(dados, premios_musicas, how ='left', on='nome')
-dados = pd.merge(dados, premios_albuns, how ='left',  on='album')
+def juntar_dataframes(df ,premios_musicas, premios_albuns, albuns):
+    dados = df.copy()
+    dados["album"] = dados.index #deixa album como uma coluna ao inves de index
+    dados.reset_index(drop=True, inplace = True) #rearruma o index
+    dados = dados[dados['album'].isin(albuns)] #filtra apenas os albuns de interesse
+    dados['nome'] = dados['nome'].str.lower() #padroniza as strings colocando tudo em minusculo
+    premios_albuns['album'] = premios_albuns['album'].apply(str) #transforma em string todos albuns
+    dados = pd.merge(dados, premios_musicas, how ='left', on='nome') #agrega na base o df de premios das musicas
+    dados = pd.merge(dados, premios_albuns, how ='left',  on='album') #agrega na base o df de premios dos albuns
+    return dados
+
+
+#junta todas as informações 
+albuns = ["19", "21", "25", "30"]
+dados = juntar_dataframes(df,premios_musicas, premios_albuns, albuns)
 
 
 #salvando arquivo no formato csv
 dados.to_csv('Adele_Com_Premios.csv', encoding="utf-8")
-=======
-import pandas as pd
-
-ARTISTA = "Adele"
-
-#df com os dados das musicas e respectivas letras 
-dados = pd.read_csv(f"C:/Users/Pc/Downloads/{ARTISTA}.csv", sep=";", encoding="utf-8-sig", index_col = 0)
-
-#Incluindo o album ocmo uma coluna do DF
-dados["album"] = dados.index
-dados.reset_index(drop=True, inplace = True)
-
-#albuns de interesse
-albuns = ["19", "21", "25", "30"]
-dados = dados[dados['album'].isin(albuns)]
-dados['nome'] = dados['nome'].str.lower() #formatando no mesmo layout dos dados das tabelas de premios
-
-
-#tabelas de premios das musicas e dos albuns 
-premios_musicas = pd.read_csv("MusiscaEPremios.csv", sep=",", encoding="utf-8-sig", index_col = 0)
-premios_albuns = pd.read_csv("AlbunsEPremios.csv", sep=",", encoding="utf-8-sig", index_col = 0)
-
-#mudança do tipo de dado da coluna album para string
-premios_albuns.rename(columns = {'nome': 'album'}, inplace = True)
-premios_albuns['album'] = premios_albuns['album'].apply(str)
-
-#juntando os 3 dfs 
-dados = pd.merge(dados, premios_musicas, how ='left', on='nome')
-dados = pd.merge(dados, premios_albuns, how ='left',  on='album')
-
-
-#salvando arquivo no formato csv
-dados.to_csv('Adele_Com_Premios.csv', encoding="utf-8")
->>>>>>> 55d007eaeb85901f63decfbbd6d664ff703bbfa4
