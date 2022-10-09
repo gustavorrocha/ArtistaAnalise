@@ -7,21 +7,39 @@ import scipy
 #GRUPO DE PERGUNTAS 1
 # Cálculo do máximo e mínimo de aspectos por álbum
 def max_e_min_album(df, coluna): 
+    """Funçao que calcula o máximo e mínimo de aspectos por álbum
+
+    :param df: Data Frame a ser utilizado
+    :type df: pandas.DataFrame
+    :param coluna: Aspecto a ser analizado, podendo ser "popularidade" e "duracao"
+    :type coluna: str
+    :return: As músicas com maiores e menores popularidade ou duração por álbum
+    :rtype: pandas.DataFrame
+    """
     if not isinstance(df, pd.core.frame.DataFrame):
         raise TypeError("O df deve ser um pd.DataFrame")
     if not isinstance(coluna, str):
         raise TypeError("A coluna deve ser uma str")
     lista_albuns = []
     try:
-    for album in set(df.index.get_level_values("album")): 
-        info_album = df.loc[[album]]
-        max_album = (info_album[["nome", coluna]].sort_values(by=[coluna], ascending=False)[:3])
-        min_album = (info_album[["nome", coluna]].sort_values(by=[coluna])[:3])
-        lista_albuns.append(pd.concat([min_album, max_album])) 
-    return pd.concat(lista_albuns)
+        for album in set(df.index.get_level_values("album")): 
+            info_album = df.loc[[album]]
+            max_album = (info_album[["nome", coluna]].sort_values(by=[coluna], ascending=False)[:3])
+            min_album = (info_album[["nome", coluna]].sort_values(by=[coluna])[:3])
+            lista_albuns.append(pd.concat([min_album, max_album])) 
+        return pd.concat(lista_albuns)
 
 # Cálculo do máximo e mínimo da aspectos em toda a discografia do artista
 def max_e_min_musicas(df, coluna):
+    """Funçao que calcula o máximo e mínimo de aspectos por álbum
+
+    :param df: Data Frame a ser utilizado
+    :type df: pandas.DataFrame
+    :param coluna: Aspecto a ser analizado, podendo ser "popularidade" e "duracao"
+    :type coluna: str
+    :return: As músicas com maiores e menores popularidade ou duração na carreira do artista
+    :rtype: pandas.DataFrame
+    """
     if not isinstance(df, pd.core.frame.DataFrame):
         raise TypeError("O df deve ser um pd.DataFrame")
     if not isinstance(coluna, str):
@@ -35,6 +53,13 @@ def max_e_min_musicas(df, coluna):
     
 # Visualização do máximo e mínimo de aspectos por álbum
 def visualizacao_maxmin_album(df, coluna):
+    """Funçao que calcula o máximo e mínimo de aspectos por álbum
+
+    :param df: Data Frame a ser utilizado
+    :type df: pandas.DataFrame
+    :param coluna: Aspecto a ser analizado, podendo ser "popularidade" e "duracao"
+    :type coluna: str
+    """
     if not isinstance(df, pd.core.frame.DataFrame):
         raise TypeError("O df deve ser um pd.DataFrame")
     if not isinstance(coluna, str):
@@ -42,20 +67,27 @@ def visualizacao_maxmin_album(df, coluna):
     try:
         principal = max_e_min_album(df, coluna)
         fig = sns.barplot(data = principal, x = coluna, y = "nome") # Criando o gráfico de barras
-        plt.show ()
+        plt.savefig ("./graficoalbum", dpi=600)
     except KeyError:
        print(f'A entrada {coluna} não é uma coluna válida do df. Tente uma coluna existente.')
 
 # Visualização do máximo e mínimo de aspectos em toda a discografia do artista
 def visualizacao_maxmin_musicas(df, coluna):
+    """Funçao que calcula o máximo e mínimo de aspectos por álbum
+
+    :param df: Data Frame a ser utilizado
+    :type df: pandas.DataFrame
+    :param coluna: Aspecto a ser analizado, podendo ser "popularidade" e "duracao"
+    :type coluna: str
+    """
     if not isinstance(df, pd.core.frame.DataFrame):
         raise TypeError("O df deve ser um pd.DataFrame")
     if not isinstance(coluna, str):
         raise TypeError("A coluna deve ser uma str")
     try:
         principal = max_e_min_musicas(df, coluna)
-        fig = sns.barplot(data = principal, x = "nome", y = coluna)
-        plt.show ()
+        fig = sns.barplot(data = principal, x = "nome", y = coluna) #Criando gráfico em barras
+        plt.savefig ("./graficodiscografia", dpi=600)
     except KeyError:
        print(f'A entrada {coluna} não é uma coluna válida do df. Tente uma coluna existente.')
     
