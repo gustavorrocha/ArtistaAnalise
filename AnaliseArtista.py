@@ -4,28 +4,60 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy
 
-#GRUPO DE PERGUNTAS 2
+#GRUPO DE PERGUNTAS 1
 # Cálculo do máximo e mínimo de aspectos por álbum
 def max_e_min_album(df, coluna): 
+    if not isinstance(df, pd.core.frame.DataFrame):
+        raise TypeError("O df deve ser um pd.DataFrame")
+    if not isinstance(coluna, str):
+        raise TypeError("A coluna deve ser uma str")
+    lista_albuns = []
+    try:
     for album in set(df.index.get_level_values("album")): 
         info_album = df.loc[[album]]
         max_album = (info_album[["nome", coluna]].sort_values(by=[coluna], ascending=False)[:3])
         min_album = (info_album[["nome", coluna]].sort_values(by=[coluna])[:3])
-        return pd.concat([min_album, max_album], ignore_index=True, axis=0)
+        lista_albuns.append(pd.concat([min_album, max_album])) 
+    return pd.concat(lista_albuns)
 
 # Cálculo do máximo e mínimo da aspectos em toda a discografia do artista
 def max_e_min_musicas(df, coluna):
-    max_musicas = (df[["nome", coluna]].sort_values(by=[coluna], ascending=False)[:3])
-    min_musicas = (df[["nome", coluna]].sort_values(by=[coluna])[:3])
-    return pd.concat([max_musicas, min_musicas], ignore_index=True, axis=0)
+    if not isinstance(df, pd.core.frame.DataFrame):
+        raise TypeError("O df deve ser um pd.DataFrame")
+    if not isinstance(coluna, str):
+        raise TypeError("A coluna deve ser uma str")
+    try:
+        max_musicas = (df[["nome", coluna]].sort_values(by=[coluna], ascending=False)[:3])
+        min_musicas = (df[["nome", coluna]].sort_values(by=[coluna])[:3])
+        return pd.concat([max_musicas, min_musicas], ignore_index=True, axis=0)
+    except KeyError:
+       print(f'A entrada {coluna} não é uma coluna válida do df. Tente uma coluna existente.')
+    
+# Visualização do máximo e mínimo de aspectos por álbum
+def visualizacao_maxmin_album(df, coluna):
+    if not isinstance(df, pd.core.frame.DataFrame):
+        raise TypeError("O df deve ser um pd.DataFrame")
+    if not isinstance(coluna, str):
+        raise TypeError("A coluna deve ser uma str")
+    try:
+        principal = max_e_min_album(df, coluna)
+        fig = sns.barplot(data = principal, x = coluna, y = "nome") # Criando o gráfico de barras
+        plt.show ()
+    except KeyError:
+       print(f'A entrada {coluna} não é uma coluna válida do df. Tente uma coluna existente.')
 
 # Visualização do máximo e mínimo de aspectos em toda a discografia do artista
 def visualizacao_maxmin_musicas(df, coluna):
-    principal = max_e_min_musicas(df, coluna)
-    fig = sns.barplot(data = principal, x = "nome", y = coluna)
-    return plt.show ()
- 
-    
+    if not isinstance(df, pd.core.frame.DataFrame):
+        raise TypeError("O df deve ser um pd.DataFrame")
+    if not isinstance(coluna, str):
+        raise TypeError("A coluna deve ser uma str")
+    try:
+        principal = max_e_min_musicas(df, coluna)
+        fig = sns.barplot(data = principal, x = "nome", y = coluna)
+        plt.show ()
+    except KeyError:
+       print(f'A entrada {coluna} não é uma coluna válida do df. Tente uma coluna existente.')
     
 # Função que retorna resumo dos albuns mais premiados com a respectiva quantidade de premios de album e musica
 def albuns_mais_premiados(df, top):
@@ -50,9 +82,6 @@ def albuns_mais_premiados(df, top):
         return
     dfcopy["quantidade de premios"] = dfcopy["premios do album"].str.split(" & ").apply(len)
     return dfcopy[:top][["quantidade de premios"]]
-
-
-
 
 # Função que avalia a relação entre a duração da música e algumas variaveis da discografia
 def corr_com_tempo(df, variavel):
