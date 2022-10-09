@@ -1,20 +1,29 @@
 # Importando as bibliotecas que serão utilizadas no decorrer do código
 import lyricsgenius as lg
 import pandas as pd
+import sys
 
 
-# Função que importa os álbums de determinado artista
 def importar_albums(nome_artista):
-    """Função que importa os álbums de determinado artista
+    """Importa os álbums de determinado artista
 
     :param nome_artista: Nome do artista desejado
     :type nome_artista: str
     :return: Todos os álbums desse artista
     :rtype: list[str]
     """
+    
+    if not isinstance(nome_artista, str):
+        # Levanta um erro caso o tipo de 'nome_artista' seja inválido
+        raise TypeError("O nome do artista deve ser do tipo 'str'!")
 
-    # Obtém o objeto da classe "Artist" do artista desejado
-    artist = genius.search_artist(nome_artista, max_songs=0, get_full_info=False) 
+    try:
+        # Obtém o objeto da classe "Artist" do artista desejado
+        artist = genius.search_artist(artist_name=nome_artista, max_songs=0, get_full_info=False)
+    except:
+        # Caso, o artista não seja encontrado retorna um erro
+        print("Ops :( Ocorreu um erro na procura do artista")
+        sys.exit(2)
 
     # Loop para passar por todas as 'páginas' de álbums do artista
     pagina = 1
@@ -31,15 +40,15 @@ def importar_albums(nome_artista):
     return albums_lista # Retorna a lista encontrada
 
 
-# Função que importa as letras das músicas de uma lista de álbums
 def importar_letras(nome_artista):
-    """Função que importa as letras das músicas de uma lista de álbums
+    """Importa as letras das músicas de uma lista de álbums
 
     :param nome_artista: Nome do artista desejado
     :type nome_artista: str
     :return: Músicas do artista e suas respectivas letras
     :rtype: list[dict]
     """
+
     # Chama a função que importa os álbums
     albums = importar_albums(nome_artista) 
     
@@ -74,9 +83,8 @@ def importar_letras(nome_artista):
     return musicas_dados # Retorna a lista com os dados das músicas
 
 
-# Função que cria um DataFrame com as letras das músicas
 def criar_df_letras(nome_artista):
-    """Função que cria um DataFrame com as letras das músicas
+    """Cria um DataFrame com as letras das músicas
 
     :param nome_artista: Nome do artista desejado
     :type nome_artista: str
@@ -105,6 +113,8 @@ def criar_df_letras(nome_artista):
 token = "u2SqMOrCtzWwY9xGxI6PiLn5aVqnhzWMiaMWB2BmrfuvJQL-Z_nQ4pv8gJej4isU" 
 genius = lg.Genius(token, timeout=60, retries=10, remove_section_headers=True)
 
-ARTISTA = "Adele" # Nome do artista cujas letras serão obtidas
-df_letras = criar_df_letras(ARTISTA) # Cria um DataFrame com as letras do artista escolhido
-df_letras.to_csv(f"./Infos/Letras - {ARTISTA}.csv", sep=";", encoding="utf-8-sig") # Exporta o df em um csv
+print(criar_df_letras(""))
+
+# ARTISTA = "Adele" # Nome do artista cujas letras serão obtidas
+# df_letras = criar_df_letras(ARTISTA) # Cria um DataFrame com as letras do artista escolhido
+# df_letras.to_csv(f"./Infos/Letras - {ARTISTA}.csv", sep=";", encoding="utf-8-sig") # Exporta o df em um csv
